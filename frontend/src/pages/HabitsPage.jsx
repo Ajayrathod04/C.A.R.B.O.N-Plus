@@ -120,10 +120,11 @@ export default function HabitsPage({ refreshTrigger, triggerRefresh }) {
           </div>
 
           <div>
-            <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px', display: 'block' }}>
+            <label htmlFor="habitValue" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px', display: 'block' }}>
               Value ({getHabitUnit(selectedHabit)})
             </label>
             <input
+              id="habitValue"
               type="number"
               value={habitValue}
               onChange={(e) => setHabitValue(e.target.value)}

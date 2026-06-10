@@ -106,8 +106,8 @@ export default function CalculatorPage({ onFootprintLogged }) {
         
         {/* Date Input */}
         <div>
-          <label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px', display: 'block' }}>Date of Activities</label>
-          <input type="date" name="date" value={formData.date} onChange={handleChange} required />
+          <label htmlFor="date" style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px', display: 'block' }}>Date of Activities</label>
+          <input id="date" type="date" name="date" value={formData.date} onChange={handleChange} required />
         </div>
 
         {/* Section 1: Transportation */}
@@ -118,8 +118,8 @@ export default function CalculatorPage({ onFootprintLogged }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('transportType')}</label>
-              <select name="transportType" value={formData.transportType} onChange={handleChange}>
+              <label htmlFor="transportType" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('transportType')}</label>
+              <select id="transportType" name="transportType" value={formData.transportType} onChange={handleChange}>
                 <option value="car_petrol">{trans('carPetrol')}</option>
                 <option value="car_diesel">{trans('carDiesel')}</option>
                 <option value="car_electric">{trans('carElectric')}</option>
@@ -131,8 +131,9 @@ export default function CalculatorPage({ onFootprintLogged }) {
               </select>
             </div>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('distance')}</label>
+              <label htmlFor="transportDistance" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('distance')}</label>
               <input 
+                id="transportDistance"
                 type="number" 
                 name="transportDistance" 
                 value={formData.transportDistance} 
@@ -153,15 +154,16 @@ export default function CalculatorPage({ onFootprintLogged }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('electricityType')}</label>
-              <select name="electricityType" value={formData.electricityType} onChange={handleChange}>
+              <label htmlFor="electricityType" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('electricityType')}</label>
+              <select id="electricityType" name="electricityType" value={formData.electricityType} onChange={handleChange}>
                 <option value="grid">{trans('grid')}</option>
                 <option value="renewable">{trans('renewable')}</option>
               </select>
             </div>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('electricity')}</label>
+              <label htmlFor="electricityKwh" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('electricity')}</label>
               <input 
+                id="electricityKwh"
                 type="number" 
                 name="electricityKwh" 
                 value={formData.electricityKwh} 
@@ -181,8 +183,8 @@ export default function CalculatorPage({ onFootprintLogged }) {
             <h3 style={{ fontSize: '18px' }}>{trans('food')}</h3>
           </div>
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('foodHabit')}</label>
-            <select name="foodHabit" value={formData.foodHabit} onChange={handleChange}>
+            <label htmlFor="foodHabit" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('foodHabit')}</label>
+            <select id="foodHabit" name="foodHabit" value={formData.foodHabit} onChange={handleChange}>
               <option value="meat_heavy">{trans('meatHeavy')}</option>
               <option value="meat_average">{trans('meatAverage')}</option>
               <option value="vegetarian">{trans('vegetarian')}</option>
@@ -199,16 +201,17 @@ export default function CalculatorPage({ onFootprintLogged }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('wasteType')}</label>
-              <select name="wasteType" value={formData.wasteType} onChange={handleChange}>
+              <label htmlFor="wasteType" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('wasteType')}</label>
+              <select id="wasteType" name="wasteType" value={formData.wasteType} onChange={handleChange}>
                 <option value="landfill">{trans('landfill')}</option>
                 <option value="organic">{trans('organic')}</option>
                 <option value="recycled">{trans('recycled')}</option>
               </select>
             </div>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('waste')}</label>
+              <label htmlFor="wasteWeight" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('waste')}</label>
               <input 
+                id="wasteWeight"
                 type="number" 
                 name="wasteWeight" 
                 value={formData.wasteWeight} 

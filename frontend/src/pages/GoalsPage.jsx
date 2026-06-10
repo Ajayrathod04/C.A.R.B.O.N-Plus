@@ -93,10 +93,11 @@ export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
 
         <form onSubmit={handleCreateGoal} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
+            <label htmlFor="goalTitle" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
               {t('goalTitle')}
             </label>
             <input
+              id="goalTitle"
               type="text"
               name="title"
               value={formData.title}
@@ -108,10 +109,10 @@ export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
+              <label htmlFor="goalCategory" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
                 Category
               </label>
-              <select name="category" value={formData.category} onChange={handleChange}>
+              <select id="goalCategory" name="category" value={formData.category} onChange={handleChange}>
                 <option value="transport">Transportation</option>
                 <option value="electricity">Electricity</option>
                 <option value="food">Diet/Food</option>
@@ -120,10 +121,11 @@ export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
               </select>
             </div>
             <div>
-              <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
+              <label htmlFor="goalTarget" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
                 Target (kg CO2e)
               </label>
               <input
+                id="goalTarget"
                 type="number"
                 name="targetValue"
                 value={formData.targetValue}
@@ -137,10 +139,11 @@ export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
           </div>
 
           <div>
-            <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
+            <label htmlFor="goalEndDate" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
               {t('endDate')}
             </label>
             <input
+              id="goalEndDate"
               type="date"
               name="endDate"
               value={formData.endDate}

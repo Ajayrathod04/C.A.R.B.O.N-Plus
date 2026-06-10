@@ -1,5 +1,8 @@
 /**
- * Simple validation helper
+ * Performs key and rule-based validation on a generic payload.
+ * @param {Object} data - Payload data
+ * @param {Object} schema - Validation schema rules
+ * @returns {Object} { isValid: boolean, errors: Object }
  */
 const validateFields = (data, schema) => {
   const errors = {};
@@ -50,7 +53,9 @@ const validateFields = (data, schema) => {
 };
 
 /**
- * Express middleware validator generator
+ * Express middleware validator generator.
+ * @param {Object} schema - Schema rules
+ * @returns {Function} Express middleware function
  */
 const validateBody = (schema) => {
   return (req, res, next) => {

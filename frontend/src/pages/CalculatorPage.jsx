@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import api from '../services/api';
-import { useLanguage } from '../contexts/LanguageContext';
+import useLanguage from '../hooks/useLanguage';
 import { Calculator, Navigation, Sun, Flame, Trash2, CheckCircle2, AlertTriangle } from 'lucide-react';
+import Card from '../components/Card';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
+/**
+ * Calculator log entry page view component.
+ * Validates and submits daily transport, electricity, diet and waste metrics.
+ * @param {Object} props
+ * @param {Function} props.onFootprintLogged - Callback trigger on submit
+ */
 export default function CalculatorPage({ onFootprintLogged }) {
-  const { t } = { t: (key) => key }; // Fallback context helper if hook is missing
   const { t: trans } = useLanguage();
 
   const [formData, setFormData] = useState({
@@ -38,7 +46,6 @@ export default function CalculatorPage({ onFootprintLogged }) {
     setSuccess(false);
     setComputedTotal(null);
 
-    // Format fields
     const payload = {
       ...formData,
       transportDistance: formData.transportDistance === '' ? 0 : Number(formData.transportDistance),
@@ -50,8 +57,7 @@ export default function CalculatorPage({ onFootprintLogged }) {
       const res = await api.logFootprint(payload);
       setComputedTotal(res.total);
       setSuccess(true);
-      onFootprintLogged(); // trigger dashboard refresh
-      // Reset form
+      onFootprintLogged();
       setFormData({
         transportType: 'car_petrol',
         transportDistance: '',
@@ -81,7 +87,7 @@ export default function CalculatorPage({ onFootprintLogged }) {
       </div>
 
       {success && (
-        <div className="glass-card animate-fade-in" style={{ borderColor: 'var(--primary)', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <Card className="animate-fade-in" style={{ borderColor: 'var(--primary)', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
           <CheckCircle2 size={36} style={{ color: 'var(--primary)', flexShrink: 0 }} />
           <div>
             <h4 style={{ fontSize: '18px', color: 'var(--primary)' }}>Footprint Logged!</h4>
@@ -89,26 +95,30 @@ export default function CalculatorPage({ onFootprintLogged }) {
               Your carbon footprint has been successfully recorded. Total impact of this entry: <strong style={{ color: 'var(--text-main)' }}>{computedTotal} kg CO2e</strong>.
             </p>
           </div>
-        </div>
+        </Card>
       )}
 
       {error && (
-        <div className="glass-card" style={{ borderColor: 'var(--danger)', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <Card style={{ borderColor: 'var(--danger)', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
           <AlertTriangle size={36} style={{ color: 'var(--danger)', flexShrink: 0 }} />
           <div>
             <h4 style={{ fontSize: '18px', color: 'var(--danger)' }}>Calculation Error</h4>
             <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>{error}</p>
           </div>
-        </div>
+        </Card>
       )}
 
       <form onSubmit={handleSubmit} className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
-        {/* Date Input */}
-        <div>
-          <label htmlFor="date" style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px', display: 'block' }}>Date of Activities</label>
-          <input id="date" type="date" name="date" value={formData.date} onChange={handleChange} required />
-        </div>
+        <Input 
+          id="date" 
+          label="Date of Activities" 
+          type="date" 
+          name="date" 
+          value={formData.date} 
+          onChange={handleChange} 
+          required 
+        />
 
         {/* Section 1: Transportation */}
         <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
@@ -130,19 +140,17 @@ export default function CalculatorPage({ onFootprintLogged }) {
                 <option value="none">No commuting</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="transportDistance" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('distance')}</label>
-              <input 
-                id="transportDistance"
-                type="number" 
-                name="transportDistance" 
-                value={formData.transportDistance} 
-                onChange={handleChange} 
-                placeholder="0"
-                min="0"
-                step="any"
-              />
-            </div>
+            <Input 
+              id="transportDistance"
+              label={trans('distance')}
+              type="number" 
+              name="transportDistance" 
+              value={formData.transportDistance} 
+              onChange={handleChange} 
+              placeholder="0"
+              min="0"
+              step="any"
+            />
           </div>
         </div>
 
@@ -160,19 +168,17 @@ export default function CalculatorPage({ onFootprintLogged }) {
                 <option value="renewable">{trans('renewable')}</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="electricityKwh" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('electricity')}</label>
-              <input 
-                id="electricityKwh"
-                type="number" 
-                name="electricityKwh" 
-                value={formData.electricityKwh} 
-                onChange={handleChange} 
-                placeholder="0"
-                min="0"
-                step="any"
-              />
-            </div>
+            <Input 
+              id="electricityKwh"
+              label={trans('electricity')}
+              type="number" 
+              name="electricityKwh" 
+              value={formData.electricityKwh} 
+              onChange={handleChange} 
+              placeholder="0"
+              min="0"
+              step="any"
+            />
           </div>
         </div>
 
@@ -208,28 +214,26 @@ export default function CalculatorPage({ onFootprintLogged }) {
                 <option value="recycled">{trans('recycled')}</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="wasteWeight" style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>{trans('waste')}</label>
-              <input 
-                id="wasteWeight"
-                type="number" 
-                name="wasteWeight" 
-                value={formData.wasteWeight} 
-                onChange={handleChange} 
-                placeholder="0"
-                min="0"
-                step="any"
-              />
-            </div>
+            <Input 
+              id="wasteWeight"
+              label={trans('waste')}
+              type="number" 
+              name="wasteWeight" 
+              value={formData.wasteWeight} 
+              onChange={handleChange} 
+              placeholder="0"
+              min="0"
+              step="any"
+            />
           </div>
         </div>
 
         {/* Submit */}
-        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', textAlign: 'right' }}>
-          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', padding: '14px' }}>
+        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
+          <Button type="submit" variant="primary" disabled={loading} style={{ width: '100%', padding: '14px', display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center' }}>
             <Calculator size={18} />
             {loading ? 'Processing...' : trans('logFootprint')}
-          </button>
+          </Button>
         </div>
 
       </form>

@@ -1,9 +1,22 @@
 import React from 'react';
 import { Trash2, Compass, RefreshCw } from 'lucide-react';
+import Card from './Card';
+import Button from './Button';
 
+/**
+ * Renders a list of carbon reduction goals, progress tracking bar, and updates.
+ * @param {Object} props
+ * @param {Array.<Object>} props.goals - List of user goals
+ * @param {Object} props.progressUpdate - Current input progress values
+ * @param {Function} props.setProgressUpdate 
+ * @param {boolean} props.loading
+ * @param {Function} props.onDeleteGoal
+ * @param {Function} props.onUpdateProgress
+ * @param {Function} props.t - Translate helper
+ */
 export default function GoalsList({ goals, progressUpdate, setProgressUpdate, loading, onDeleteGoal, onUpdateProgress, t }) {
   return (
-    <div className="glass-card">
+    <Card>
       <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>Active & Completed Goals</h3>
 
       {loading ? (
@@ -81,13 +94,13 @@ export default function GoalsList({ goals, progressUpdate, setProgressUpdate, lo
                       min="0"
                       step="any"
                     />
-                    <button 
+                    <Button 
                       onClick={() => onUpdateProgress(goal.id)}
-                      className="btn btn-secondary"
+                      variant="secondary"
                       style={{ padding: '6px 12px', fontSize: '12px' }}
                     >
                       Update
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -100,6 +113,6 @@ export default function GoalsList({ goals, progressUpdate, setProgressUpdate, lo
           <p>No carbon goals logged yet. Set a goal and start saving!</p>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

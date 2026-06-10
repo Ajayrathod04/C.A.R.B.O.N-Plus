@@ -1,9 +1,12 @@
-const firestoreService = require('./firestore');
+const logRepository = require('../repositories/logRepository');
 const emissionFactors = require('../constants/emissionFactors');
 const logger = require('./cloudLogger');
 
-const COLLECTION_NAME = 'emissions_logs';
-
+/**
+ * Calculates emissions breakdown and totals based on entry data.
+ * @param {Object} data - Emission values from client input
+ * @returns {Object} Calculated emission logs and metadata
+ */
 const calculateFootprint = (data) => {
   const transportDistance = Number(data.transportDistance) || 0;
   const transportType = data.transportType || 'car_petrol';
@@ -45,7 +48,16 @@ const calculateFootprint = (data) => {
   };
 };
 
+/**
+ * Service to process and manage emission records.
+ */
 const calculatorService = {
+  /**
+   * Calculate emission logs and persist to DB.
+   * @param {string} userId 
+   * @param {Object} data 
+   * @returns {Promise<Object>} The saved log entry with unique ID
+   */
   async computeAndSave(userId, data) {
     const result = calculateFootprint(data);
     const logEntry = {
@@ -55,7 +67,7 @@ const calculatorService = {
     };
 
     logger.info(`Calculating footprint for user: ${userId}`, { total: result.total });
-    const saveRes = await firestoreService.addDocument(COLLECTION_NAME, logEntry);
+    const saveRes = await logRepository.create(logEntry);
     
     return {
       id: saveRes.id,
@@ -63,23 +75,32 @@ const calculatorService = {
     };
   },
 
+  /**
+   * Retrieve emission logs sorted by date.
+   * @param {string} userId 
+   * @returns {Promise<Array<Object>>}
+   */
   async getLogs(userId) {
-    const logs = await firestoreService.getCollection(COLLECTION_NAME);
-    return logs.filter(log => log.userId === userId)
-               .sort((a, b) => new Date(b.date) - new Date(a.date));
+    return await logRepository.getLogsByUser(userId);
   },
 
+  /**
+   * Delete specific log if owned by the user.
+   * @param {string} userId 
+   * @param {string} logId 
+   * @returns {Promise<Object>} success verification
+   */
   async deleteLog(userId, logId) {
-    const log = await firestoreService.getDocument(COLLECTION_NAME, logId);
+    const log = await logRepository.getById(logId);
     if (!log || log.userId !== userId) {
       throw new Error('Emission log not found or unauthorized');
     }
-    await firestoreService.deleteDocument(COLLECTION_NAME, logId);
+    await logRepository.delete(logId);
     return { success: true };
   }
 };
 
 module.exports = {
   calculatorService,
-  calculateFootprint // exported for unit testing
+  calculateFootprint
 };

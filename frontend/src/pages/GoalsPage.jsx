@@ -3,7 +3,17 @@ import useLanguage from '../hooks/useLanguage';
 import useGoals from '../hooks/useGoals';
 import { Target } from 'lucide-react';
 import GoalsList from '../components/GoalsList';
+import Card from '../components/Card';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
+/**
+ * Main goals management page view container.
+ * Displays forms to create new carbon reduction goals and lists existing goals.
+ * @param {Object} props
+ * @param {number} props.refreshTrigger
+ * @param {Function} props.triggerRefresh
+ */
 export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
   const { t } = useLanguage();
   const { goals, loading, createGoal, updateGoalProgress, deleteGoal } = useGoals(refreshTrigger, triggerRefresh);
@@ -68,27 +78,23 @@ export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
     <div className="animate-fade-in" style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr', gap: '24px' }}>
       
       {/* Create Goal Form */}
-      <div className="glass-card" style={{ height: 'fit-content' }}>
+      <Card style={{ height: 'fit-content' }}>
         <h3 style={{ marginBottom: '20px', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Target style={{ color: 'var(--primary)' }} />
           {t('createGoal')}
         </h3>
 
         <form onSubmit={handleCreateGoal} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label htmlFor="goalTitle" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
-              {t('goalTitle')}
-            </label>
-            <input
-              id="goalTitle"
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="e.g., Use train for 3 commutes"
-              required
-            />
-          </div>
+          <Input
+            id="goalTitle"
+            label={t('goalTitle')}
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="e.g., Use train for 3 commutes"
+            required
+          />
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
@@ -103,43 +109,36 @@ export default function GoalsPage({ refreshTrigger, triggerRefresh }) {
                 <option value="general">General</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="goalTarget" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
-                Target (kg CO2e)
-              </label>
-              <input
-                id="goalTarget"
-                type="number"
-                name="targetValue"
-                value={formData.targetValue}
-                onChange={handleChange}
-                placeholder="20"
-                min="0.1"
-                step="any"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="goalEndDate" style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px', display: 'block' }}>
-              {t('endDate')}
-            </label>
-            <input
-              id="goalEndDate"
-              type="date"
-              name="endDate"
-              value={formData.endDate}
+            
+            <Input
+              id="goalTarget"
+              label="Target (kg CO2e)"
+              type="number"
+              name="targetValue"
+              value={formData.targetValue}
               onChange={handleChange}
+              placeholder="20"
+              min="0.1"
+              step="any"
               required
             />
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={submitting} style={{ marginTop: '8px' }}>
+          <Input
+            id="goalEndDate"
+            label={t('endDate')}
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleChange}
+            required
+          />
+
+          <Button type="submit" variant="primary" disabled={submitting} style={{ marginTop: '8px' }}>
             {submitting ? 'Creating...' : t('add')}
-          </button>
+          </Button>
         </form>
-      </div>
+      </Card>
 
       {/* Goals List */}
       <GoalsList 

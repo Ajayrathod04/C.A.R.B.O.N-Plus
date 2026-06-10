@@ -1,9 +1,16 @@
-const firestoreService = require('./firestore');
+const goalRepository = require('../repositories/goalRepository');
 const logger = require('./cloudLogger');
 
-const COLLECTION_NAME = 'goals';
-
+/**
+ * Service to manage user goals, target reductions, and updates.
+ */
 const goalService = {
+  /**
+   * Create a new carbon reduction goal.
+   * @param {string} userId 
+   * @param {Object} goalData 
+   * @returns {Promise<Object>}
+   */
   async createGoal(userId, goalData) {
     const goal = {
       userId,
@@ -18,26 +25,43 @@ const goalService = {
     };
 
     logger.info(`Creating goal for user ${userId}: ${goal.title}`);
-    const res = await firestoreService.addDocument(COLLECTION_NAME, goal);
+    const res = await goalRepository.create(goal);
     return {
       id: res.id,
       ...goal
     };
   },
 
+  /**
+   * Retrieve goals belonging to a specific user.
+   * @param {string} userId 
+   * @returns {Promise<Array<Object>>}
+   */
   async getGoals(userId) {
-    const goals = await firestoreService.getCollection(COLLECTION_NAME);
-    return goals.filter(g => g.userId === userId);
+    return await goalRepository.getGoalsByUser(userId);
   },
 
+  /**
+   * Retrieve a specific goal by ID, checking ownership.
+   * @param {string} userId 
+   * @param {string} goalId 
+   * @returns {Promise<Object>}
+   */
   async getGoal(userId, goalId) {
-    const goal = await firestoreService.getDocument(COLLECTION_NAME, goalId);
+    const goal = await goalRepository.getById(goalId);
     if (!goal || goal.userId !== userId) {
       throw new Error('Goal not found or unauthorized');
     }
     return { id: goalId, ...goal };
   },
 
+  /**
+   * Update goal completion progress.
+   * @param {string} userId 
+   * @param {string} goalId 
+   * @param {number} currentValue 
+   * @returns {Promise<Object>}
+   */
   async updateGoalProgress(userId, goalId, currentValue) {
     const goal = await this.getGoal(userId, goalId);
     
@@ -56,13 +80,19 @@ const goalService = {
     delete updated.id;
 
     logger.info(`Updating goal progress for user ${userId}, goal ${goalId} to ${val}`);
-    await firestoreService.saveDocument(COLLECTION_NAME, goalId, updated);
+    await goalRepository.update(goalId, updated);
     return { id: goalId, ...updated };
   },
 
+  /**
+   * Delete a specific goal.
+   * @param {string} userId 
+   * @param {string} goalId 
+   * @returns {Promise<Object>} success verification
+   */
   async deleteGoal(userId, goalId) {
-    const goal = await this.getGoal(userId, goalId);
-    await firestoreService.deleteDocument(COLLECTION_NAME, goalId);
+    await this.getGoal(userId, goalId);
+    await goalRepository.delete(goalId);
     return { success: true };
   }
 };

@@ -1,13 +1,25 @@
 const { calculatorService } = require('./calculatorService');
 
+/**
+ * Service to aggregate, summarize and slice user emissions data for dashboard metrics.
+ */
 const dashboardService = {
+  /**
+   * Retrieve and aggregate daily, weekly, monthly and yearly emissions breakdowns.
+   * @param {string} userId - ID of the target user
+   * @returns {Promise<Object>} Aggregated emission totals and recent activity logs
+   */
   async getDashboardData(userId) {
     const logs = await calculatorService.getLogs(userId);
 
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
 
-    // Helper for date subtraction
+    /**
+     * Helper to compute YYYY-MM-DD offset strings.
+     * @param {number} daysAgo 
+     * @returns {string} Date string YYYY-MM-DD
+     */
     const getPastDateStr = (daysAgo) => {
       const d = new Date();
       d.setDate(d.getDate() - daysAgo);
@@ -68,7 +80,11 @@ const dashboardService = {
       }
     });
 
-    // Format outputs to 2 decimal places
+    /**
+     * Standardizes floating-point calculations to 2 decimal places.
+     * @param {Object} b - Breakdown object
+     * @returns {Object} Normalized breakdown
+     */
     const formatBreakdown = (b) => ({
       transport: parseFloat(b.transport.toFixed(2)),
       electricity: parseFloat(b.electricity.toFixed(2)),
@@ -81,7 +97,7 @@ const dashboardService = {
       weekly: { total: parseFloat(weeklyFootprint.toFixed(2)), breakdown: formatBreakdown(weeklyBreakdown) },
       monthly: { total: parseFloat(monthlyFootprint.toFixed(2)), breakdown: formatBreakdown(monthlyBreakdown) },
       yearly: { total: parseFloat(yearlyFootprint.toFixed(2)), breakdown: formatBreakdown(yearlyBreakdown) },
-      recentLogs: logs.slice(0, 10) // Return 10 most recent logs
+      recentLogs: logs.slice(0, 10)
     };
   }
 };

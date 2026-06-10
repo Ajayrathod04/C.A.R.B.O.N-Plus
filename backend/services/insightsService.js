@@ -1,5 +1,9 @@
 const dashboardService = require('./dashboardService');
 
+/**
+ * Static library containing recommendations mapped by impact category.
+ * @type {Object.<string, Array.<Object>>}
+ */
 const INSIGHTS_LIBRARY = {
   transport: [
     {
@@ -81,7 +85,15 @@ const INSIGHTS_LIBRARY = {
   ]
 };
 
+/**
+ * Service to generate personalized action tips and insights.
+ */
 const insightsService = {
+  /**
+   * Evaluate user activity history and build targeted suggestions.
+   * @param {string} userId - Target user ID
+   * @returns {Promise<Array.<Object>>}
+   */
   async getInsights(userId) {
     const data = await dashboardService.getDashboardData(userId);
     const breakdown = data.weekly.breakdown;
@@ -90,7 +102,6 @@ const insightsService = {
     const insights = [];
 
     if (total === 0) {
-      // Return default onboarding recommendations
       return [
         {
           id: 'gen1',

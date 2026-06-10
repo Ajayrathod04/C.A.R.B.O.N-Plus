@@ -1,10 +1,17 @@
-const firestoreService = require('./firestore');
+const habitRepository = require('../repositories/habitRepository');
 const emissionFactors = require('../constants/emissionFactors');
 const logger = require('./cloudLogger');
 
-const COLLECTION_NAME = 'habit_logs';
-
+/**
+ * Service to manage green habit logs and carbon savings calculation.
+ */
 const habitService = {
+  /**
+   * Log habit occurrence and calculate offset metrics.
+   * @param {string} userId 
+   * @param {Object} habitData 
+   * @returns {Promise<Object>}
+   */
   async logHabit(userId, habitData) {
     const habitType = habitData.habitType;
     const value = Number(habitData.value) || 0;
@@ -22,25 +29,34 @@ const habitService = {
     };
 
     logger.info(`Logging habit for user ${userId}: ${habitType} (${value})`);
-    const res = await firestoreService.addDocument(COLLECTION_NAME, logEntry);
+    const res = await habitRepository.create(logEntry);
     return {
       id: res.id,
       ...logEntry
     };
   },
 
+  /**
+   * Get habit logging history for a user.
+   * @param {string} userId 
+   * @returns {Promise<Array<Object>>}
+   */
   async getHabits(userId) {
-    const logs = await firestoreService.getCollection(COLLECTION_NAME);
-    return logs.filter(log => log.userId === userId)
-               .sort((a, b) => new Date(b.date) - new Date(a.date));
+    return await habitRepository.getHabitsByUser(userId);
   },
 
+  /**
+   * Delete habit logging record.
+   * @param {string} userId 
+   * @param {string} logId 
+   * @returns {Promise<Object>} success verification
+   */
   async deleteHabitLog(userId, logId) {
-    const log = await firestoreService.getDocument(COLLECTION_NAME, logId);
+    const log = await habitRepository.getById(logId);
     if (!log || log.userId !== userId) {
       throw new Error('Habit log not found or unauthorized');
     }
-    await firestoreService.deleteDocument(COLLECTION_NAME, logId);
+    await habitRepository.delete(logId);
     return { success: true };
   }
 };

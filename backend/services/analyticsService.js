@@ -2,7 +2,16 @@ const { calculatorService } = require('./calculatorService');
 const habitService = require('./habitService');
 const goalService = require('./goalService');
 
+/**
+ * Service to perform comparative statistical analytics, eco-scoring calculations,
+ * and user behavior modeling.
+ */
 const analyticsService = {
+  /**
+   * Aggregate metrics and calculate eco scores and trends.
+   * @param {string} userId - Target user ID
+   * @returns {Promise<Object>} Analytics indicators, scores, behavior ratio and trends
+   */
   async getAnalytics(userId) {
     const emissionLogs = await calculatorService.getLogs(userId);
     const habitLogs = await habitService.getHabits(userId);
@@ -10,7 +19,11 @@ const analyticsService = {
 
     const now = new Date();
     
-    // Helper to get past dates
+    /**
+     * Helper to retrieve Date object offset by past days.
+     * @param {number} daysAgo 
+     * @returns {Date} Offset Date instance
+     */
     const getPastDate = (daysAgo) => {
       const d = new Date();
       d.setDate(d.getDate() - daysAgo);

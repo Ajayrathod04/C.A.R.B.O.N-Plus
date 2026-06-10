@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LanguageProvider } from './contexts/LanguageContext';
 import Navbar from './components/Navbar';
+import ErrorBoundary from './components/ErrorBoundary';
 import DashboardPage from './pages/DashboardPage';
 import CalculatorPage from './pages/CalculatorPage';
 import HabitsPage from './pages/HabitsPage';
@@ -44,8 +45,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }

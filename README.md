@@ -1,6 +1,6 @@
 # C.A.R.B.O.N+ (Carbon Awareness, Reduction & Behavioral Optimization Navigator)
 
-Measure. Understand. Reduce.
+**Measure. Understand. Reduce.**
 
 C.A.R.B.O.N+ is a production-grade, highly responsive Carbon Footprint Awareness Web Application that helps individuals compute, monitor, and reduce their greenhouse gas emissions through custom analytics, green habits log, and personalized sustainability feedback.
 
@@ -40,15 +40,16 @@ graph TD
     Analytics[Analytics & Score Service]
     Goals[Goals Service]
     Habits[Habits Service]
+    Insights[Insights & Roadmap Service]
     
     FirestoreDB[Google Cloud Firestore]
     MemoryDB[In-Memory Local Mock Database]
   end
 
   Backend --> Sanitize --> Validators --> Routes --> Controllers
-  Controllers --> Calculator & Dashboard & Analytics & Goals & Habits
+  Controllers --> Calculator & Dashboard & Analytics & Goals & Habits & Insights
   
-  Calculator & Goals & Habits --> FirestoreDB
+  Calculator & Goals & Habits & Insights --> FirestoreDB
   FirestoreDB -.-> |Connection Failure Fallback| MemoryDB
 ```
 
@@ -62,31 +63,40 @@ For in-depth details, see the [Architecture Guide](docs/ARCHITECTURE.md).
 3. **Green Habit Tracker**: Log environmental actions (walking, recycling) to offset emissions.
 4. **Carbon Reduction Goals**: Establish targets, track progress bars, and earn completions.
 5. **Eco Score & Impact Analytics**: Dynamic HSL color indicators and weekly SVG trend graphs.
-6. **Personalized Insights**: Suggests improvements targeted at the user's highest emission sources.
-7. **10 Regional Languages**: Seamless multi-language support (English, Hindi, Marathi, Tamil, Telugu, Kannada, Gujarati, Punjabi, Bengali, Urdu).
+6. **AI Carbon Reduction Roadmap**: Dynamic 30/60/90 Day milestone action items compiled using Google Gemini.
+7. **Carbon Savings Simulator**: Run hypothetical scenarios (e.g. cycling vs driving) to forecast annual CO2 reductions.
+8. **10 Regional Languages**: Seamless multi-language support (English, Hindi, Marathi, Tamil, Telugu, Kannada, Gujarati, Punjabi, Bengali, Urdu).
 
 ---
 
-## 5. Google Services Integration
+## 5. Technology Stack
+- **Frontend**: React (v19), Vite, Lucide Icons, Pure CSS (Dark Theme, Backdrop glassmorphic layouts).
+- **Backend**: Node.js (CommonJS), Express, Winston Logger, Helmet, Express Rate Limit.
+- **Database**: Google Cloud Firestore (primary) / Local In-Memory Storage (development fallback).
+- **AI Integration**: Google Gemini API via HTTPS.
+
+---
+
+## 6. Google Services Integration
 - **Google Cloud Firestore**: Primary database for logs, goals, and habits. Built with a robust fail-safe mechanism: if GCP config is missing, it seamlessly redirects writes/reads to local in-memory storage without crash.
 - **Google Cloud Run**: Container-ready configurations using a multi-stage Docker build, exposing standard environment ports.
 - **Google Cloud Logging**: Winston structured logger outputting production logs to console in native JSON format for automated stackdriver ingestion.
 
 ---
 
-## 6. Key API Endpoints
+## 7. API Flow & Key Endpoints
 - `GET /api/health` - Health state and active database connection report.
 - `POST /api/calculator` - Calculates and stores daily footprints.
 - `GET /api/dashboard` - Returns grouped totals and logs history.
 - `POST /api/goals` - Sets a carbon reduction target.
 - `POST /api/habits` - Logs eco-friendly habits and carbon saved.
 - `GET /api/analytics` - Fetches Eco Score and weekly SVG trend data.
-
-For a full endpoint list, see the [API Reference Guide](docs/API_REFERENCE.md).
+- `GET /api/insights/roadmap` - Fetches the 30/60/90 day action plan generated using Gemini.
+- `GET /api/insights/report` - Generates downloadable sustainability report text.
 
 ---
 
-## 7. Security & Input Sanitization
+## 8. Security & Input Sanitization
 - **Helmet Headers**: Blocks script injection and browser exploits.
 - **API Rate Limiting**: Throttles rapid API requests.
 - **CORS Policies**: Restricts API calls to approved origins.
@@ -95,9 +105,9 @@ For a full endpoint list, see the [API Reference Guide](docs/API_REFERENCE.md).
 
 ---
 
-## 8. Development & Deployment Steps
+## 9. Development & Deployment Steps
 
-### Quick Start (Local)
+### Quick Start (Local Development)
 1. **Build Frontend**:
    ```bash
    cd frontend
@@ -116,7 +126,7 @@ For containerized and GCP deployment guides, see the [Deployment Guide](docs/DEP
 
 ---
 
-## 9. Testing Suite
+## 10. Testing Strategy & Suite
 The backend features Jest and Supertest unit and integration test coverage:
 - **Run tests**: `npm run test` (executed from the `backend/` directory).
 - **Target coverage**: 90%+ line coverage across all files.
@@ -125,7 +135,17 @@ For full testing configurations, see the [Testing Guide](docs/TESTING.md).
 
 ---
 
-## 10. Future Scope
+## 11. Future Scope
 - **IoT Smart Meter Integration**: Pull electricity consumption stats automatically.
 - **GPS Commute Tracking**: Log commuting distances in the background.
-- **Community Sustainability Leagues**: Leaderboards to encourage green habits collectively.
+- **Gamified Leagues**: User-versus-user sustainability challenges.
+
+---
+
+## 12. App Screenshots
+
+### Footprint Entry Form
+![Calculator Page](docs/screenshots/calculator.png)
+
+### Carbon Goals Tracking
+![Goals Page](docs/screenshots/goals.png)

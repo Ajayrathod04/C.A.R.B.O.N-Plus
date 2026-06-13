@@ -52,6 +52,8 @@ export const api = {
 
   // Insights
   getInsights: () => request('/insights'),
+  getRoadmap: () => request('/insights/roadmap'),
+  getReport: () => request('/insights/report'),
 
   // Goals
   getGoals: () => request('/goals'),

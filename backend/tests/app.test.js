@@ -868,4 +868,58 @@ describe('Additional C.A.R.B.O.N+ Coverage Tests', () => {
     expect(res.length).toBe(1); // will push exactly electricity[0] due to length < 3
     spyDash.mockRestore();
   });
+
+  // 22. New Insights Roadmap and Report Endpoint tests
+  test('GET /api/insights/roadmap should return active 30-60-90 roadmap plan', async () => {
+    const res = await request(app)
+      .get('/api/insights/roadmap')
+      .set('x-user-id', mockUserId);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.roadmap30).toBeDefined();
+    expect(res.body.data.roadmap60).toBeDefined();
+    expect(res.body.data.roadmap90).toBeDefined();
+  });
+
+  test('GET /api/insights/report should generate downloadable sustainability text report', async () => {
+    const res = await request(app)
+      .get('/api/insights/report')
+      .set('x-user-id', mockUserId);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.reportText).toContain('C.A.R.B.O.N+ SUSTAINABILITY REPORT');
+  });
+
+  test('insightsService.getRoadmap should fall back to local roadmap generator on API error', async () => {
+    const insightsService = require('../services/insightsService');
+    
+    // Set mock Gemini API Key
+    const originalApiKey = process.env.GEMINI_API_KEY;
+    process.env.GEMINI_API_KEY = 'mock-invalid-key-to-trigger-http';
+
+    // Mock https.request to simulate network failure or API error
+    const https = require('https');
+    const mockRequestObj = {
+      on: jest.fn(),
+      write: jest.fn(),
+      end: jest.fn()
+    };
+    const spyRequest = jest.spyOn(https, 'request').mockImplementation((options, cb) => {
+      // Trigger error event to simulate call failure
+      process.nextTick(() => {
+        const errorFn = mockRequestObj.on.mock.calls.find(c => c[0] === 'error');
+        if (errorFn) errorFn[1](new Error('Mock network failure'));
+      });
+      return mockRequestObj;
+    });
+
+    const roadmap = await insightsService.getRoadmap('test-user');
+    expect(roadmap.roadmap30).toBeDefined();
+    expect(roadmap.roadmap60).toBeDefined();
+
+    // Clean up
+    spyRequest.mockRestore();
+    process.env.GEMINI_API_KEY = originalApiKey;
+  });
 });
+

@@ -135,3 +135,67 @@ Record eco-friendly habits to calculate saved carbon footprint.
 
 ## 5. Carbon Reduction Goals
 Standard CRUD endpoints under `/goals` for set targets, listing them (`GET`), updating goal progress (`PUT /goals/:id`), and deleting goals (`DELETE /goals/:id`).
+
+---
+
+## 6. Sustainability Insights & Tools
+
+### Get Recommendations
+Retrieve personalized priority action recommendations.
+
+* **URL**: `/insights`
+* **Method**: `GET`
+* **Response (Success - 200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Sustainability insights retrieved successfully",
+    "data": [
+      {
+        "id": "t1",
+        "category": "transport",
+        "title": "Shift to Active Commuting",
+        "description": "Replace short car trips with walking or cycling...",
+        "priority": "high"
+      }
+    ]
+  }
+  ```
+
+### Generate Action Roadmap
+Compile a customized 30/60/90 day carbon reduction milestone plan.
+
+* **URL**: `/insights/roadmap`
+* **Method**: `GET`
+* **Response (Success - 200)**:
+  ```json
+  {
+    "success": true,
+    "message": "AI sustainability roadmap generated successfully",
+    "data": {
+      "roadmap30": {
+        "title": "Active Commuting Habit",
+        "keyActions": [ ... ],
+        "expectedSavingDescription": "Saves up to 15-20% of transit emissions annually."
+      },
+      "roadmap60": { ... },
+      "roadmap90": { ... }
+    }
+  }
+  ```
+
+### Generate Sustainability Report
+Fetch the downloadable text report summary.
+
+* **URL**: `/insights/report`
+* **Method**: `GET`
+* **Response (Success - 200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Sustainability report generated successfully",
+    "data": {
+      "reportText": "====================\nC.A.R.B.O.N+ SUSTAINABILITY REPORT..."
+    }
+  }
+  ```

@@ -8,7 +8,7 @@ import Loader from '../components/Loader';
 
 /**
  * Insights and sustainability tools page component.
- * Features: Personalized recommendations, AI Roadmap, Carbon Simulator, Community leaderboard and Report downloader.
+ * Features: Personalized recommendations, Carbon Roadmap, Carbon Simulator, Community leaderboard and Report downloader.
  * @param {Object} props
  * @param {number} props.refreshTrigger - Trigger page data reload
  */
@@ -17,7 +17,7 @@ export default function InsightsPage({ refreshTrigger }) {
   const [insights, setInsights] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // AI Roadmap State
+  // Carbon Roadmap State
   const [roadmap, setRoadmap] = useState(null);
   const [roadmapLoading, setRoadmapLoading] = useState(false);
   const [roadmapError, setRoadmapError] = useState(null);
@@ -59,7 +59,7 @@ export default function InsightsPage({ refreshTrigger }) {
     }
   }, []);
 
-  // Fetch AI Roadmap
+  // Fetch Carbon Roadmap
   const handleFetchRoadmap = useCallback(async () => {
     try {
       setRoadmapLoading(true);
@@ -67,7 +67,7 @@ export default function InsightsPage({ refreshTrigger }) {
       const data = await api.getRoadmap();
       setRoadmap(data);
     } catch (err) {
-      setRoadmapError('Failed to fetch AI Roadmap. Please try again.');
+      setRoadmapError('Failed to fetch Carbon Roadmap. Please try again.');
     } finally {
       setRoadmapLoading(false);
     }
@@ -216,12 +216,12 @@ export default function InsightsPage({ refreshTrigger }) {
           )}
         </div>
 
-        {/* AI Carbon Reduction Roadmap */}
+        {/* Carbon Reduction Roadmap */}
         <Card>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
               <TrendingDown style={{ color: 'var(--primary)' }} />
-              AI Carbon Reduction Roadmap
+              Carbon Reduction Roadmap
             </h3>
             {!roadmap && (
               <Button onClick={handleFetchRoadmap} disabled={roadmapLoading} variant="primary" style={{ padding: '8px 16px', fontSize: '13px' }}>

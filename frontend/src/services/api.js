@@ -54,6 +54,7 @@ export const api = {
   getInsights: () => request('/insights'),
   getRoadmap: () => request('/insights/roadmap'),
   getReport: () => request('/insights/report'),
+  chat: (message, history) => request('/insights/chat', { method: 'POST', body: JSON.stringify({ message, history }) }),
 
   // Goals
   getGoals: () => request('/goals'),

@@ -43,6 +43,23 @@ const insightsController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  /**
+   * Sustainability advisor interactive chat.
+   */
+  async chat(req, res, next) {
+    try {
+      const userId = getUserId(req);
+      const { message, history } = req.body;
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ success: false, message: 'Message is required' });
+      }
+      const data = await insightsService.chat(userId, message, history);
+      return successResponse(res, 200, 'Chat response generated successfully', { reply: data });
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

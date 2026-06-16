@@ -453,6 +453,67 @@ Thank you for using C.A.R.B.O.N+!
 ==================================================`;
 
     return { reportText };
+  },
+
+  /**
+   * Sustainability advisor interactive chat utilizing Gemini API.
+   * Falls back to high-quality local sustainability recommendations if key is missing.
+   * @param {string} userId
+   * @param {string} message
+   * @param {Array.<Object>} [history=[]]
+   * @returns {Promise<string>}
+   */
+  async chat(userId, message, history = []) {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey || apiKey === 'xxxxxxxx') {
+      logger.info("Gemini API key not configured. Using local sustainability recommendations for chat.");
+      return "Hello! I am C.A.R.B.O.N+'s Sustainability Assistant. It looks like the Gemini API key is not configured, but I can still tell you that adopting green habits (like cycling, reducing food waste, and turning off standby appliances) can significantly lower your carbon footprint. Try setting a goal or logging a habit to get started!";
+    }
+
+    try {
+      logger.info(`Processing chat query for user ${userId} using Gemini API`);
+      
+      const contents = [];
+      
+      // Inject System Prompt context as the first turn
+      contents.push({
+        role: 'user',
+        parts: [{ text: "System persona: You are C.A.R.B.O.N+'s friendly Sustainability Assistant. Your goal is to guide users to measure, understand, and reduce their carbon footprint. Answer questions concisely (under 3 paragraphs) using encouraging, action-oriented, professional language. Focus strictly on climate, carbon, eco-habits, and sustainability." }]
+      });
+      contents.push({
+        role: 'model',
+        parts: [{ text: "Understood. I will act as C.A.R.B.O.N+'s Sustainability Assistant and provide concise, encouraging advice focused on carbon reduction." }]
+      });
+
+      // Add conversation history
+      history.forEach(msg => {
+        contents.push({
+          role: msg.sender === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }]
+        });
+      });
+
+      // Add new user message
+      contents.push({
+        role: 'user',
+        parts: [{ text: message }]
+      });
+
+      const requestBody = JSON.stringify({ contents });
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const response = await postRequest(url, { 'Content-Type': 'application/json' }, requestBody);
+
+      if (response.statusCode === 200) {
+        const responseJson = JSON.parse(response.body);
+        return responseJson.candidates[0].content.parts[0].text.trim();
+      } else {
+        throw new Error(`Gemini API returned status code ${response.statusCode}`);
+      }
+    } catch (error) {
+      logger.error('Failed to get chatbot response from Gemini. Falling back to local responder.', error);
+      return "I am experiencing difficulty connecting to my sustainability database right now, but remember: small changes in transit, energy, diet, and waste lead to big environmental impact!";
+    }
   }
 };
 

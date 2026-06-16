@@ -5,6 +5,7 @@ import { Lightbulb, Info, RefreshCw, Star, Download, TrendingDown, Users, Award,
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Loader from '../components/Loader';
+import Chatbot from '../components/Chatbot';
 
 /**
  * Insights and sustainability tools page component.
@@ -307,6 +308,8 @@ export default function InsightsPage({ refreshTrigger }) {
 
       {/* Right Column: Simulator, Report & Leaderboard */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        
+        <Chatbot />
         
         {/* Carbon Savings Simulator */}
         <Card>

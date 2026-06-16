@@ -5,5 +5,6 @@ const insightsController = require('../controllers/insightsController');
 router.get('/', insightsController.getInsights);
 router.get('/roadmap', insightsController.getRoadmap);
 router.get('/report', insightsController.getReport);
+router.post('/chat', insightsController.chat);
 
 module.exports = router;

@@ -921,5 +921,24 @@ describe('Additional C.A.R.B.O.N+ Coverage Tests', () => {
     spyRequest.mockRestore();
     process.env.GEMINI_API_KEY = originalApiKey;
   });
+
+  test('POST /api/insights/chat should return success with chat reply', async () => {
+    const res = await request(app)
+      .post('/api/insights/chat')
+      .set('x-user-id', mockUserId)
+      .send({ message: 'How can I save electricity?' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.reply).toBeDefined();
+  });
+
+  test('POST /api/insights/chat should return 400 when message is missing', async () => {
+    const res = await request(app)
+      .post('/api/insights/chat')
+      .set('x-user-id', mockUserId)
+      .send({});
+    expect(res.statusCode).toBe(400);
+    expect(res.body.success).toBe(false);
+  });
 });
 
